@@ -1,17 +1,23 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
-RUN apt-get update && apt-get -y upgrade && \
-    apt-get install --no-install-recommends -y software-properties-common && \
-    apt-get install --no-install-recommends -y python3-pip build-essential python3-dev && \
-    apt-get install --no-install-recommends -y ansible python3-paramiko sshpass ssh && \
-    apt-get install --no-install-recommends -y vim telnet curl iputils-ping && \
-    apt-get install --no-install-recommends -y mysql-client
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get -y upgrade 
+RUN apt-get install --no-install-recommends -y software-properties-common 
+RUN apt-get install --no-install-recommends -y python3-pip build-essential python3-dev 
+RUN echo "Etc/UTC" > /etc/timezone
+RUN apt-get install --no-install-recommends -y ansible 
+RUN apt-get install --no-install-recommends -y python3-paramiko 
+RUN apt-get install --no-install-recommends -y sshpass 
+RUN apt-get install --no-install-recommends -y ssh 
+RUN apt-get install --no-install-recommends -y vim telnet curl iputils-ping 
+RUN apt-get install --no-install-recommends -y mysql-client
 
-RUN pip3 install steelscript
-RUN pip3 install steelscript.appresponse
+RUN apt-get install -y git-all
+RUN pip install git+https://github.com/riverbed/steelscript 
+RUN pip install git+https://github.com/riverbed/steelscript-appresponse
 RUN pip3 install mysql-connector-python
 
-RUN echo "localhost" >> /etc/ansible/hosts
+#RUN echo "localhost" >> /etc/ansible/hosts
 
 RUN mkdir /usr/lib/python3/dist-packages/ansible/modules/riverbed/
 COPY ./modules/service.py /usr/local/lib/python3.8/dist-packages/steelscript/common/
